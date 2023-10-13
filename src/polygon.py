@@ -49,3 +49,8 @@ if __name__ == "__main__":
                             point_index = index
                     if point_index != -1:
                         points.pop(point_index)
+        ros_publisher_points = Polygon()
+        for point in points:
+            ros_publisher_point = Point32(point[0], point[1], 0)
+            ros_publisher_points.points.append(ros_publisher_point)
+        polygon_publisher.publish(ros_publisher_points)
