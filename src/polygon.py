@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 import pygame, rospy
+from pygame.locals import *
 from geometry_msgs.msg import Point32
 from geometry_msgs.msg import Polygon
 
@@ -24,3 +25,12 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 running = False
                 break
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    if len(points) > 0:
+                        points.pop()
+                if event.key == pygame.K_c:
+                    points.clear()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    points.append(pygame.mouse.get_pos())
