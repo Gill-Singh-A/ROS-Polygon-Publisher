@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-import pygame, rospy
+import pygame, rospy, math
 from pygame.locals import *
 from geometry_msgs.msg import Point32
 from geometry_msgs.msg import Polygon
@@ -11,12 +11,15 @@ points = []
 
 polygon_publisher = rospy.Publisher("/polygon", Polygon, queue_size=10)
 
+def distance(point_1, point_2):
+    return math.sqrt((point_1[0]-point_2[0])**2+(point_1[1]-point_2[1])**2)
+
 if __name__ == "__main__":
     rospy.init_node("polygon")
     rate = rospy.Rate(frequency)
     pygame.init()
     logo = pygame.image.load("assets/images/ariitk.jpg")
-    pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
+    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
     pygame.display.set_caption("Polygon")
     pygame.display.set_icon(logo)
     running = True
@@ -34,3 +37,15 @@ if __name__ == "__main__":
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     points.append(pygame.mouse.get_pos())
+                if event.button == 3:
+                    mouse_position = pygame.mouse.get_pos()
+                    point_index = -1
+                    width, height = screen.get_size()
+                    min_distance = width+height
+                    for index, point in enumerate(points):
+                        current_distance = distance(point, mouse_position)
+                        if current_distance < min_distance:
+                            min_distance = current_distance
+                            point_index = index
+                    if point_index != -1:
+                        points.pop(point_index)
