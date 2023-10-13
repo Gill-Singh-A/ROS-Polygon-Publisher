@@ -25,6 +25,11 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
     pygame.display.set_caption("Polygon")
     pygame.display.set_icon(logo)
+    print("Left Click to Add a Point")
+    print("Right Click to Delete the Nearest Point")
+    print("Press Backspace on Keyboard to delete the Lastest Added Point")
+    print("Press 'C' on Keyboard to delete all the points")
+    print("Points Published on /polygon with message type as geometry_msgs/Polygon")
     running = True
     while running and not rospy.is_shutdown():
         for event in pygame.event.get():
