@@ -60,7 +60,7 @@ if __name__ == "__main__":
         screen.fill(background_color)
         ros_publisher_points = Polygon()
         for draw_point_index, point in enumerate(points):
-            ros_publisher_point = Point32(point[0], point[1], 0)
+            ros_publisher_point = Point32(point[0], point[1], draw_point_index)
             ros_publisher_points.points.append(ros_publisher_point)
             pygame.draw.line(screen, line_color, point, points[(draw_point_index+1)%len(points)], line_width)
         polygon_publisher.publish(ros_publisher_points)
