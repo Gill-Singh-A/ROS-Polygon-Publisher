@@ -17,5 +17,7 @@ pip install -r requirements.txt
 * Right Click to Delete the Nearest Point
 * Press Backspace on Keyboard to delete the Lastest Added Point
 * Press 'C' on Keyboard to delete all the points
+* Press 'P' on Keyboard to toggle Publishing
+* Points will be Published on /polygon with message type as geometry_msgs/Polygon
 <!-- -->
 Points Published on /polygon with message type as geometry_msgs/Polygon
