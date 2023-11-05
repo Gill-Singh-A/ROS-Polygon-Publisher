@@ -10,12 +10,15 @@ line_color = (255, 255, 255)
 minor_line_color = (100, 100, 100)
 major_line_color = (200, 200, 200)
 font_color = (250, 250, 250)
-line_width = 5
+point_index_font_color = (10, 10, 10)
+point_index_background_color = (190, 190, 190)
+line_width = 3
 minor_line_width = 1
 major_line_width = 2
 WIDTH, HEIGHT = 600, 600
-major_x, minor_x, major_y, minor_y = 100, 10, 100, 10
+major_x, minor_x, major_y, minor_y = 100, 20, 100, 20
 font_size = 20
+point_index_font_size = 10
 frequency = 10
 points = []
 
@@ -25,20 +28,21 @@ def distance(point_1, point_2):
     return math.sqrt((point_1[0]-point_2[0])**2+(point_1[1]-point_2[1])**2)
 
 def drawGrid(screen, font):
-    for x in range(0, WIDTH, minor_x):
-        pygame.draw.line(screen, minor_line_color, (x, 0), (x, HEIGHT), minor_line_width)
-    for x in range(0, WIDTH, major_x):
-        pygame.draw.line(screen, major_line_color, (x, 0), (x, HEIGHT), major_line_width)
-    for y in range(0, WIDTH, minor_y):
-        pygame.draw.line(screen, minor_line_color, (0, y), (WIDTH, y), minor_line_width)
-    for y in range(0, WIDTH, major_y):
-        pygame.draw.line(screen, major_line_color, (0, y), (WIDTH, y), major_line_width)
-    for x in range(0, WIDTH, major_x):
+    width, height = screen.get_size()
+    for x in range(0, width, minor_x):
+        pygame.draw.line(screen, minor_line_color, (x, 0), (x, height), minor_line_width)
+    for x in range(0, width, major_x):
+        pygame.draw.line(screen, major_line_color, (x, 0), (x, height), major_line_width)
+    for y in range(0, height, minor_y):
+        pygame.draw.line(screen, minor_line_color, (0, y), (width, y), minor_line_width)
+    for y in range(0, height, major_y):
+        pygame.draw.line(screen, major_line_color, (0, y), (width, y), major_line_width)
+    for x in range(0, width, major_x):
         text = font.render(f"{x//major_x}", True, font_color, background_color)
         textPos = text.get_rect()
         textPos.center = (x + font_size//2, font_size // 2 + major_line_width)
         screen.blit(text, textPos)
-    for y in range(0, WIDTH, major_y):
+    for y in range(0, height, major_y):
         text = font.render(f"{y//major_y}", True, font_color, background_color)
         textPos = text.get_rect()
         textPos.center = (font_size//2, y + font_size // 2 + major_line_width)
@@ -92,5 +96,10 @@ if __name__ == "__main__":
             ros_publisher_point = Point32(point[0], point[1], draw_point_index)
             ros_publisher_points.points.append(ros_publisher_point)
             pygame.draw.line(screen, line_color, point, points[(draw_point_index+1)%len(points)], line_width)
+            pygame.draw.circle(screen, point_index_background_color, point, int(point_index_font_size*1.2))
+            text = font.render(f"{draw_point_index+1}", True, point_index_font_color, point_index_background_color)
+            textPos = text.get_rect()
+            textPos.center = point
+            screen.blit(text, textPos)
         polygon_publisher.publish(ros_publisher_points)
         pygame.display.update()
