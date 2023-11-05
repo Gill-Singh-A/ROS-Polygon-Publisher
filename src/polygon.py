@@ -23,6 +23,7 @@ frequency = 10
 points = []
 
 polygon_publisher = rospy.Publisher("/polygon", Polygon, queue_size=10)
+publish = False
 
 def distance(point_1, point_2):
     return math.sqrt((point_1[0]-point_2[0])**2+(point_1[1]-point_2[1])**2)
@@ -61,7 +62,8 @@ if __name__ == "__main__":
     print("Right Click to Delete the Nearest Point")
     print("Press Backspace on Keyboard to delete the Lastest Added Point")
     print("Press 'C' on Keyboard to delete all the points")
-    print("Points Published on /polygon with message type as geometry_msgs/Polygon")
+    print("Press 'P' on Keyboard to toggle Publishing")
+    print("Points will be Published on /polygon with message type as geometry_msgs/Polygon")
     running = True
     while running and not rospy.is_shutdown():
         for event in pygame.event.get():
@@ -74,6 +76,13 @@ if __name__ == "__main__":
                         points.pop()
                 if event.key == pygame.K_c:
                     points.clear()
+                if event.key == pygame.K_p:
+                    if publish == False:
+                        publish = True
+                        print("Started Publishing on /polygon with message type as geometry_msgs/Polygon")
+                    else:
+                        publish = False
+                        print("Stopped Publishing on /polygon with message type as geometry_msgs/Polygon")
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     points.append(pygame.mouse.get_pos())
@@ -97,9 +106,11 @@ if __name__ == "__main__":
             ros_publisher_points.points.append(ros_publisher_point)
             pygame.draw.line(screen, line_color, point, points[(draw_point_index+1)%len(points)], line_width)
             pygame.draw.circle(screen, point_index_background_color, point, int(point_index_font_size*1.2))
+        for draw_point_index, point in enumerate(points):
             text = font.render(f"{draw_point_index+1}", True, point_index_font_color, point_index_background_color)
             textPos = text.get_rect()
             textPos.center = point
             screen.blit(text, textPos)
-        polygon_publisher.publish(ros_publisher_points)
+        if publish == True:
+            polygon_publisher.publish(ros_publisher_points)
         pygame.display.update()
